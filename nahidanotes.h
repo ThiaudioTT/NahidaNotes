@@ -23,6 +23,6 @@ private slots:
 
 private:
     Ui::NahidaNotes *ui;
-    QTextEdit currentFile;
+    QString currentFile;
 };
 #endif // NAHIDANOTES_H
