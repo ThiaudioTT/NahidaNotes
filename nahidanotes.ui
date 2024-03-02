@@ -14,13 +14,13 @@
    <string>NahidaNotes</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QMarkdownTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>180</y>
-      <width>191</width>
-      <height>111</height>
+      <x>180</x>
+      <y>110</y>
+      <width>411</width>
+      <height>241</height>
      </rect>
     </property>
    </widget>
@@ -48,7 +48,8 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -56,7 +57,8 @@
   </action>
   <action name="actionOpen">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -64,7 +66,8 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -72,13 +75,21 @@
   </action>
   <action name="actionSave_as">
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save as</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QMarkdownTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header location="global">qmarkdowntextedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

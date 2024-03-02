@@ -13,9 +13,3 @@ NahidaNotes::~NahidaNotes()
     delete ui;
 }
 
-void NahidaNotes::on_actionNew_triggered()
-{
-    currentFile.clear();
-    ui->textEdit->setText(QString());
-}
-

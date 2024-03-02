@@ -18,9 +18,6 @@ public:
     NahidaNotes(QWidget *parent = nullptr);
     ~NahidaNotes();
 
-private slots:
-    void on_actionNew_triggered();
-
 private:
     Ui::NahidaNotes *ui;
     QString currentFile;

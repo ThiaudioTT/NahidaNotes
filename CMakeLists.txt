@@ -22,11 +22,29 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
+set(SOURCES_3RD_PARTY
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/linenumberarea.h
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/markdownhighlighter.cpp
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/markdownhighlighter.h
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qmarkdowntextedit.cpp
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qmarkdowntextedit.h
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qownlanguagedata.cpp
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qownlanguagedata.h
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qplaintexteditsearchwidget.cpp
+    ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit/qplaintexteditsearchwidget.h)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(NahidaNotes
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${SOURCES_3RD_PARTY}
     )
+
+    # includes dep
+    target_include_directories(
+        ${PROJECT_NAME} SYSTEM
+        PUBLIC ${PROJECT_SOURCE_DIR}/3rdParty/qmarkdowntextedit)
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET NahidaNotes APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
