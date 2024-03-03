@@ -21,6 +21,8 @@ public:
 private slots:
     void on_actionNew_triggered();
 
+    void on_actionOpen_triggered();
+
 private:
     Ui::NahidaNotes *ui;
     QString currentFile;
