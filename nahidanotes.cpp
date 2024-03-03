@@ -13,3 +13,10 @@ NahidaNotes::~NahidaNotes()
     delete ui;
 }
 
+
+void NahidaNotes::on_actionNew_triggered()
+{
+    currentFile.clear(); // clears filename
+    ui->textEdit->setText(QString());
+}
+
