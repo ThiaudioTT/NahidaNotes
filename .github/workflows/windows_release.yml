@@ -61,15 +61,12 @@ jobs:
 
       - name: (8) Build
         run: |
+          Write-Output "SOURCE_DIR: $env:SOURCE_DIR"
+          Write-Output "RUNNER_TEMP: $env:RUNNER_TEMP"
           cmake -B ${{ runner.temp }}/build -S ${{ env.SOURCE_DIR }}
-          Set-Location -Path ${{ runner.temp }}/build
-          ${{ runner.temp }}/jom/jom -j2
-          Set-Location -Path release
-          windeployqt --qmldir ${{ env.SOURCE_DIR }} nahidanotes.exe --pdb --release --compiler-runtime
-          Copy-Item -Path 'C:\Windows\System32\concrt140.dll' -Destination .
-          Copy-Item -Path 'C:\Windows\System32\vccorlib140.dll' -Destination .
-          Copy-Item -Path 'C:\Windows\System32\msvcp140.dll' -Destination .
-          Copy-Item -Path 'C:\Windows\System32\vcruntime140.dll' -Destination .
+          ls ${{ runner.temp }}/build
+          Get-Content ${{ runner.temp }}/build/CMakeFiles/CMakeError.log
+          Get-Content ${{ runner.temp }}/build/CMakeFiles/CMakeOutput.log
 
       - name: (9) Zip build
         run: Compress-Archive -Path ${{ runner.temp }}/build/* -DestinationPath ${{ runner.temp }}/${{ env.ARTIFACT }}
