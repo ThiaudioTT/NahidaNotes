@@ -44,34 +44,20 @@ jobs:
           dir: ${{ runner.temp }}
           setup-python: false
 
-      - name: (4) Download JOM
-        run: |
-          Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile jom.zip
-
-      - name: (5) Unzip JOM
-        run: Expand-Archive -Path jom.zip -DestinationPath ${{ runner.temp }}/jom
-
-      - name: (6) Create build directory
-        run: New-Item -Path ${{ runner.temp }}/build -ItemType Directory
-
-      - name: (7) Set up Visual Studio shell
+      - name: (4) Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
         with:
           arch: x64
 
-      - name: (8) Build
+      - name: (5) Build
         run: |
-          Write-Output "SOURCE_DIR: $env:SOURCE_DIR"
-          Write-Output "RUNNER_TEMP: $env:RUNNER_TEMP"
           cmake -B ${{ runner.temp }}/build -S ${{ env.SOURCE_DIR }}
-          ls ${{ runner.temp }}/build
-          Get-Content ${{ runner.temp }}/build/CMakeFiles/CMakeError.log
-          Get-Content ${{ runner.temp }}/build/CMakeFiles/CMakeOutput.log
+          cmake --build ${{ runner.temp }}/build --config Release --target ALL_BUILD
 
-      - name: (9) Zip build
+      - name: (6) Zip build
         run: Compress-Archive -Path ${{ runner.temp }}/build/* -DestinationPath ${{ runner.temp }}/${{ env.ARTIFACT }}
 
-      - name: (10) Save build artifact
+      - name: (7) Save build artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.ARTIFACT }}
