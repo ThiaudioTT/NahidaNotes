@@ -9,21 +9,21 @@ on:
       - 'v*'
   pull_request:
     branches:
-    - 'master'
-    - 'workflow-test'
+      - 'master'
+      - 'workflow-test'
 
 defaults:
   run:
-    shell: cmd
+    shell: powershell
 
 env:
-  SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.5.3
-  ARTIFACT:     nahidanotes-build.zip
+  SOURCE_DIR: ${{ github.workspace }}
+  QT_VERSION: '6.5.3'
+  ARTIFACT: 'nahidanotes-build.zip'
 
 jobs:
   build:
-    runs-on:  windows-latest
+    runs-on: windows-latest
 
     steps:
       - name: (1) Checkout repo
@@ -32,33 +32,27 @@ jobs:
           submodules: recursive
 
       - name: (2) Get all tags for correct version determination
-        working-directory:  ${{ github.workspace }}
-        run: |
-          git fetch --all --tags -f
+        run: git fetch --all --tags -f
+
       - name: (3) Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version:      ${{ env.QT_VERSION }}
-          host:         windows
-          target:       desktop
-          arch:         win64_msvc2019_64
-          dir:          ${{ runner.temp }}
-        #   modules:      qtcharts qt3d
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          dir: ${{ runner.temp }}
           setup-python: false
 
       - name: (4) Download JOM
-        uses: suisei-cn/actions-download-file@v1
-        with:
-          url:    http://download.qt.io/official_releases/jom/jom.zip
-          target: ${{ runner.temp }}\
+        run: |
+          Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile jom.zip
 
       - name: (5) Unzip JOM
-        working-directory: ${{ runner.temp }}
-        run:  |
-              7z x jom.zip -ojom
-              
+        run: Expand-Archive -Path jom.zip -DestinationPath ${{ runner.temp }}/jom
+
       - name: (6) Create build directory
-        run:  mkdir ${{ runner.temp }}\build
+        run: New-Item -Path ${{ runner.temp }}/build -ItemType Directory
 
       - name: (7) Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
@@ -66,24 +60,22 @@ jobs:
           arch: x64
 
       - name: (8) Build
-        working-directory: ${{ runner.temp }}\build
-        run:  |
-              cmake ${{ env.SOURCE_DIR }}\CMakeLists.txt
-              ${{ runner.temp }}\jom\jom -j2
-              cd release
-              windeployqt --qmldir ${{ env.SOURCE_DIR }} nahidanotes.exe --pdb --release --compiler-runtime
-              copy C:\Windows\System32\concrt140.dll . 
-              copy C:\Windows\System32\vccorlib140.dll .
-              copy C:\Windows\System32\msvcp140.dll .
-              copy C:\Windows\System32\vcruntime140.dll .
-              
+        run: |
+          cmake -B ${{ runner.temp }}/build -S ${{ env.SOURCE_DIR }}
+          Set-Location -Path ${{ runner.temp }}/build
+          ${{ runner.temp }}/jom/jom -j2
+          Set-Location -Path release
+          windeployqt --qmldir ${{ env.SOURCE_DIR }} nahidanotes.exe --pdb --release --compiler-runtime
+          Copy-Item -Path 'C:\Windows\System32\concrt140.dll' -Destination .
+          Copy-Item -Path 'C:\Windows\System32\vccorlib140.dll' -Destination .
+          Copy-Item -Path 'C:\Windows\System32\msvcp140.dll' -Destination .
+          Copy-Item -Path 'C:\Windows\System32\vcruntime140.dll' -Destination .
+
       - name: (9) Zip build
-        working-directory: ${{ runner.temp }}
-        run:  |
-              7z a nahidanotes-build.zip ${{ runner.temp }}\build\* -r
-              
+        run: Compress-Archive -Path ${{ runner.temp }}/build/* -DestinationPath ${{ runner.temp }}/${{ env.ARTIFACT }}
+
       - name: (10) Save build artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ env.ARTIFACT }}
-          path: ${{ runner.temp }}\${{ env.ARTIFACT }}
+          path: ${{ runner.temp }}/${{ env.ARTIFACT }}
