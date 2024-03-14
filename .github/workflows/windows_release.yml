@@ -55,7 +55,7 @@ jobs:
           cmake --build ${{ runner.temp }}/build --config Release --target NahidaNotes
 
       - name: (6) Zip build
-        run: Compress-Archive -Path ${{ runner.temp }}/build/NahidaNotes.exe -DestinationPath ${{ runner.temp }}/${{ env.ARTIFACT }}
+        run: Compress-Archive -Path ${{ runner.temp }}/build -DestinationPath ${{ runner.temp }}/${{ env.ARTIFACT }}
 
       - name: (7) Save build artifact
         uses: actions/upload-artifact@v2
